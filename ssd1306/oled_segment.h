@@ -77,7 +77,9 @@ void OLED_printB(uint8_t value);            // print hex byte value
 void OLED_setpos(uint8_t x, uint8_t y);     // Set OLED cursor
 void OLED_fill(uint8_t p);                  // Fill OLED with a character
 void OLED_DrawBitmap(uint8_t x0, uint8_t y0, uint8_t w, uint8_t h, const uint8_t* bmp); // Print a bitmap
-void OLED_DrawPixel(uint8_t x, uint8_t y, bool white); // Buffer a single pixel to be printed
+void OLED_DrawPixel(uint8_t x, uint8_t y, bool white);                // Buffer a single pixel to be printed
+void OLED_DrawLine(bool vertical, short x, bool white);             // Buffer a line of pixels to be printed
+void OLED_DrawMultipleLines(bool vertical, short* x, short size, bool white);   // Buffer multiple lines of pixels to be printed
 void OLED_DisplayBuffer(void);              // Display buffered data from DrawPixel
 void OLED_DrawLogo(void);                   // Display WCH logo
 

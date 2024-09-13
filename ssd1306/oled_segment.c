@@ -284,6 +284,42 @@ void OLED_DrawPixel(uint8_t x, uint8_t y, bool white) {
     }
 }
 
+/*
+ * Draw one line or column of pixels in the screenbuffer
+ * vertical => True for columns, false for rows
+ * X => Selected row or column
+ * white => On or Off pixel
+ */
+void OLED_DrawLine(bool vertical, short x, bool white){
+    if(vertical){
+      for(short y = 0; y < SSD1306_HEIGHT; y++){
+        SSD1306_Buffer[x + (y / 8) * SSD1306_WIDTH] = white? 255 : 0;
+      }
+    } else {
+      for(short y = 0; y < SSD1306_WIDTH; y++){
+        //SSD1306_Buffer[y + (x / 8) * SSD1306_WIDTH] = white? 1 << (x % 8) : 0;
+        if(white) {
+            SSD1306_Buffer[y + (x / 8) * SSD1306_WIDTH] |= 1 << (x % 8);
+        } else { 
+            SSD1306_Buffer[y + (x / 8) * SSD1306_WIDTH] &= ~(1 << (x % 8));
+        }
+      }
+    }
+}
+
+/*
+ * Draw multiples lines or columns of pixels in the screenbuffer
+ * vertical => True for columns, false for rows
+ * X => Selected rows or columns
+ * size => Size of X array
+ * white => On or Off pixel
+ */
+void OLED_DrawMultipleLines(bool vertical, short* x, short size, bool white){
+    for (short i = 0; i < size; i++) {  
+      OLED_DrawLine(vertical, x[i], white); 
+    } 
+}
+
 /* Write the screenbuffer to the screen */
 void OLED_DisplayBuffer(void) {
 		OLED_setpos(0, 0);                      // set cursor to display start

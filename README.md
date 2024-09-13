@@ -50,12 +50,28 @@
 	
 	// Fill screen with a pattern (255 for white screen, 0 for black screen)
 	OLED_fill(255);
+	
+	// Draw horizontal line
+	OLED_clear();
+	OLED_DrawLine(false, 2, true); 
+	OLED_DisplayBuffer();
+	
+	// Draw vertical line
+	OLED_clear();
+	OLED_DrawLine(true, 2, true); 
+	OLED_DisplayBuffer();
+	
+	// Draw multiple lines
+	OLED_clear();
+	short lines[] = {0,2,3,5,6,30};
+	OLED_DrawMultipleLines(false, lines, 6, true);
+	OLED_DisplayBuffer();
  ```
  
  # Unbuffered version
- The standar library version use a 1024 bytes buffer for the DrawPixel to work with the rest of functions.
+ The standard library version use a 1024 bytes buffer for the DrawPixel to work with the rest of functions.
  
- If you dont this, you can use the "oled_small" version instead: 
+ If you dont use this, you can use the "oled_small" version instead without the buffer to reduce RAM usage: 
  ```
  #include <oled_small.h>
  ```
@@ -69,6 +85,6 @@
  
  
  # Changelog
- 
+ * v1.5.0 - Added method to draw single and multiple lines in standard library (Uses buffer)
  * v1.0.0 - Initial release 
  
