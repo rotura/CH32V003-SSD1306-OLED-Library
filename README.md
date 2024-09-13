@@ -1,13 +1,14 @@
 # CH32V003 SSD1306 OLED Library
  Small library to draw from a CH32V003 RISC-V chip to a SSD1306 Oled display.
+ 
  It works with 128x64 I2C displays. 
  
  # Usage
  Select if you are going to use the normal or unbuffered version and delete the "oled_xxx.h" and "oled_xxx.cpp" files for the version you are not going to use.
+ 
  Copy the "ssd1306" folder to your proyect's source code and import the library with:
  ```
  #include <oled_segment.h>
- 
  ```
  
  Then you can use it like (Use Delay_Ms to wait beetween changes):
@@ -49,20 +50,21 @@
 	
 	// Fill screen with a pattern (255 for white screen, 0 for black screen)
 	OLED_fill(255);
- 
  ```
  
  # Unbuffered version
- The standar library version use a 1024 byte buffer for the DrawPixel to work with the rest of functions.
+ The standar library version use a 1024 bytes buffer for the DrawPixel to work with the rest of functions.
+ 
  If you dont this, you can use the "oled_small" version instead: 
  ```
  #include <oled_small.h>
- 
  ```
  Buffered: 
+ 
  ![Buffered](https://github.com/rotura/CH32V003-SSD1306-OLED-Library/blob/main/images/buffered.jpg)
  
  Unbuffered:
+ 
  ![Unbuffered](https://github.com/rotura/CH32V003-SSD1306-OLED-Library/blob/main/images/unbuffered.jpg)
  
  
