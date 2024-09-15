@@ -26,11 +26,15 @@
 	OLED_clear();
 	OLED_print("Hello world!");
 
+	// Write inverted text
+	OLED_clear();
+	OLED_printS("Inverted text!", true);
+
 	// Draw WCH Logo
 	OLED_clear();
 	OLED_DrawLogo();
 
-	// Draw single pixels
+	// Draw single pixels (Buffered version)
 	OLED_clear();
 	OLED_DrawPixel(0,30,true);
 	OLED_DrawPixel(1,31,true);
@@ -51,17 +55,17 @@
 	// Fill screen with a pattern (255 for white screen, 0 for black screen)
 	OLED_fill(255);
 	
-	// Draw horizontal line
+	// Draw horizontal line (Buffered version)
 	OLED_clear();
 	OLED_DrawLine(false, 2, true); 
 	OLED_DisplayBuffer();
 	
-	// Draw vertical line
+	// Draw vertical line (Buffered version)
 	OLED_clear();
 	OLED_DrawLine(true, 2, true); 
 	OLED_DisplayBuffer();
 	
-	// Draw multiple lines
+	// Draw multiple lines (Buffered version)
 	OLED_clear();
 	short lines[] = {0,2,3,5,6,30};
 	OLED_DrawMultipleLines(false, lines, 6, true);
@@ -85,6 +89,7 @@
  
  
  # Changelog
- * v1.5.0 - Added method to draw single and multiple lines in standard library (Uses buffer)
- * v1.0.0 - Initial release 
+ * **v1.5.2** - Added inverted param to "OLED_printX" and "OLED_DrawBitmap" methods to both libraries. Removed scroll funcionality in "OLED_Write(char)" (**Changes only in oled_small library**).
+ * **v1.5.0** - Added method to draw single and multiple lines in standard library (**Uses buffer**)
+ * **v1.0.0** - Initial release 
  

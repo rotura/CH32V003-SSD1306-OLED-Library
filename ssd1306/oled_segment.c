@@ -113,14 +113,14 @@ void OLED_init(void) {
 }
 
 // OLED plot a single character
-void OLED_plotChar(char c) {
+void OLED_plotChar(char c, bool inverted) {
   I2C_start(OLED_ADDR);                   // start transmission to OLED
   I2C_write(OLED_DAT_MODE);               // set data mode
   short pos;
   for(short i=0 ; i!=5; i++){
-    I2C_write(font5x8[c-32][i]);
+    I2C_write(inverted? ~font5x8[c-32][i] : font5x8[c-32][i]);
     pos = cursorX + i + (cursorY / 8) * SSD1306_WIDTH;
-    SSD1306_Buffer[pos] = font5x8[c-32][i];
+    SSD1306_Buffer[pos] = inverted? ~font5x8[c-32][i] : font5x8[c-32][i];
   }
   SSD1306_Buffer[++pos] = 0;
   I2C_write(0x00);                        // write space between characters
@@ -128,11 +128,11 @@ void OLED_plotChar(char c) {
 }
 
 // OLED write a character or handle control characters
-void OLED_write(char c) {
+void OLED_write(char c, bool inverted) {
   c = c & 0x7F;                           // ignore top bit
   // normal character
   if(c >= 32) {
-    OLED_plotChar(c);
+    OLED_plotChar(c, inverted);
     if(++column > 20) {
       column = 0;
       if(line == 7) OLED_scrollDisplay();
@@ -163,22 +163,27 @@ void OLED_write(char c) {
 
 // OLED print string
 void OLED_print(char* str) {
+  OLED_printS(str, false);
+}
+
+// OLED print string
+void OLED_printS(char* str, bool inverted) {
   while(*str) {
-    OLED_write(*str++);
+    OLED_write(*str++, inverted);
   }
 }
 
 // OLED print string with newline
-void OLED_println(char* str) {
-  OLED_print(str);
-  OLED_write('\n');
+void OLED_println(char* str, bool inverted) {
+  OLED_printS(str, inverted);
+  OLED_write('\n', inverted);
 }
 
 // For BCD conversion
 const uint32_t DIVIDER[] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
 
 // Print decimal value (BCD conversion by substraction method)
-void OLED_printD(uint32_t value) {
+void OLED_printD(uint32_t value, bool inverted) {
   uint8_t digits   = 10;                          // print 10 digits
   uint8_t leadflag = 0;                           // flag for leading spaces
   while(digits--) {                               // for all digits
@@ -190,31 +195,31 @@ void OLED_printD(uint32_t value) {
       value -= divider;                           // decrease value by divider
     }
     if(!digits)  leadflag++;                      // least digit has to be printed
-    if(leadflag) OLED_write(digitval + '0');      // print the digit
+    if(leadflag) OLED_write(digitval + '0', inverted);      // print the digit
   }
 }
 
 // Convert byte nibble into hex character and print it
-void OLED_printN(uint8_t nibble) {
-  OLED_write((nibble <= 9) ? ('0' + nibble) : ('A' - 10 + nibble));
+void OLED_printN(uint8_t nibble, bool inverted) {
+  OLED_write((nibble <= 9) ? ('0' + nibble) : ('A' - 10 + nibble), inverted);
 }
 
 // Convert byte into hex characters and print it
-void OLED_printB(uint8_t value) {
-  OLED_printN(value >> 4);
-  OLED_printN(value & 0x0f);
+void OLED_printB(uint8_t value, bool inverted) {
+  OLED_printN(value >> 4, inverted);
+  OLED_printN(value & 0x0f, inverted);
 }
 
 // Convert word into hex characters and print it
-void OLED_printW(uint16_t value) {
-  OLED_printB(value >> 8);
-  OLED_printB(value);
+void OLED_printW(uint16_t value, bool inverted) {
+  OLED_printB(value >> 8, inverted);
+  OLED_printB(value, inverted);
 }
 
 // Convert long into hex characters and print it
-void OLED_printL(uint32_t value) {
-  OLED_printW(value >> 16);
-  OLED_printW(value);
+void OLED_printL(uint32_t value, bool inverted) {
+  OLED_printW(value >> 16, inverted);
+  OLED_printW(value, inverted);
 }
 
 // OLED set cursor position
@@ -247,7 +252,7 @@ void OLED_fill(uint8_t p) {
 }
 
 // OLED draw bitmap
-void OLED_DrawBitmap(uint8_t x0, uint8_t y0, uint8_t w, uint8_t h, const uint8_t* bmp) {
+void OLED_DrawBitmap(uint8_t x0, uint8_t y0, uint8_t w, uint8_t h, const uint8_t* bmp, bool inverted) {
 	int z=0;
   for(uint8_t y = y0; y < y0+(h/8); y++) {
     OLED_setpos(x0, y);
@@ -255,8 +260,8 @@ void OLED_DrawBitmap(uint8_t x0, uint8_t y0, uint8_t w, uint8_t h, const uint8_t
     I2C_write(OLED_DAT_MODE);
     for(uint8_t x = x0; x < x0+w; x++)
 		{
-      I2C_write(bmp[z]);
-      SSD1306_Buffer[cursorX + ((cursorY / 8) + cursorY%8 - 1) * SSD1306_WIDTH] = bmp[z];
+      I2C_write(inverted? ~bmp[z] : bmp[z]);
+      SSD1306_Buffer[cursorX + ((cursorY / 8) + cursorY%8 - 1) * SSD1306_WIDTH] = inverted? ~bmp[z] : bmp[z];
       cursorX++;
 			z++;
 		}
@@ -332,13 +337,13 @@ void OLED_DisplayBuffer(void) {
 }
 
 /* Write the screenbuffer with changed to the screen */
-void OLED_DrawLogo(void) {
+void OLED_DrawLogo(bool inverted) {
 		OLED_setpos(0, 0);                      // set cursor to display start
 		I2C_start(OLED_ADDR);                   // start transmission to OLED
 		I2C_write(OLED_DAT_MODE);               // set data mode
 		for(uint16_t i=0; i!=128*8; i++) {
-      I2C_write(logo_bmp[i]);               // send Logo
-      SSD1306_Buffer[cursorX + (cursorY / 8) * SSD1306_WIDTH] = logo_bmp[i];
+      I2C_write(inverted? ~logo_bmp[i] : logo_bmp[i]); // send Logo
+      SSD1306_Buffer[cursorX + (cursorY / 8) * SSD1306_WIDTH] = inverted? ~logo_bmp[i] : logo_bmp[i];
       cursorX++;
       if(cursorX > 127){
           cursorX = 0;

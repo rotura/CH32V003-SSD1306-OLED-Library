@@ -60,20 +60,20 @@ extern "C" {
 #define OLED_COMPINS      0xDA    // set COM pin config (following byte)
 
 // OLED functions
-void OLED_init(void);                      // OLED init function
-void OLED_clear(void);                     // OLED clear screen
-void OLED_write(char c);                   // OLED write a character or handle control characters
-void OLED_print(char* str);                 // OLED print string
-void OLED_println(char* str);               // OLED print string with newline
-void OLED_printD(uint32_t value);           // print decimal value
-void OLED_printL(uint32_t value);           // print hex long value
-void OLED_printW(uint16_t value);           // print hex word value
-void OLED_printB(uint8_t value);            // print hex byte value
-#define OLED_newline() OLED_write('\n')     // print newline
-void OLED_setpos(uint8_t x, uint8_t y);     // Set OLED cursor
-void OLED_fill(uint8_t p);                  // Fill OLED with a character
-void OLED_DrawBitmap(uint8_t x0, uint8_t y0, uint8_t w, uint8_t h, const uint8_t* bmp); // Print a bitmap
-void OLED_DrawLogo(void);                   // Display WCH logo
+void OLED_init(void);                       		// OLED init function
+void OLED_clear(void);                      		// OLED clear screen
+void OLED_write(char c, bool inverted);     		// OLED write a character or handle control characters
+void OLED_print(char* str);                 		// OLED print string
+void OLED_printS(char* str, bool inverted); 		// OLED print string
+void OLED_println(char* str, bool inverted);        // OLED print string with newline
+void OLED_printD(uint32_t value, bool inverted);    // Print decimal value
+void OLED_printL(uint32_t value, bool inverted);    // Print hex long value
+void OLED_printW(uint16_t value, bool inverted);    // Print hex word value
+void OLED_printB(uint8_t value, bool inverted);     // Print hex byte value
+void OLED_fill(uint8_t p);                  		// Fill OLED with a character
+void OLED_setpos(uint8_t x, uint8_t y);     		// Set OLED cursor
+void OLED_fill(uint8_t p);                  		// Fill OLED with a character
+void OLED_DrawBitmap(uint8_t x0, uint8_t y0, uint8_t w, uint8_t h, const uint8_t* bmp, bool inverted); // Draw a bitmap
 
 #ifdef __cplusplus
 };
